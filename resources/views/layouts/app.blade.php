@@ -5,53 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>@yield('titre', 'Mon application')</title>
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
     <style>
-        .navbar{
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .navbar {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            gap: 20px;
+            padding: 14px 28px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
         }
-        .navbar a{ color: #fff; text-decoration: none; font-weight: 600; transition: transform .2s ease, opacity .2s ease; }
-        .navbar a:hover{ transform: translateY(-2px); opacity: .85; }
-        .right{ margin-left: auto; display: flex; align-items: center; gap: 12px; }
-        main{ padding: 24px; max-width: 1100px; margin: 0 auto; }
-        h1{ font-size: 2rem; margin-bottom: 16px; color: #333; }
-        .card{ background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 6px 18px rgba(0,0,0,.08); margin-bottom: 16px; transition: transform .25s ease, box-shadow .25s ease; }
-        .card:hover{ transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,.12); }
-        button, .btn{ background: #667eea; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background .2s ease, transform .2s ease; }
-        button:hover, .btn:hover{ background: #5a67d8; transform: translateY(-2px); }
-        table{ width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td{ padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        th{ background: #f7f7f7; }
-        a{ color: #667eea; }
-        footer{ text-align: center; padding: 24px; color: #888; }
-        .fade-in{ animation: fadeIn .6s ease both; }
-        @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px);} to{ opacity:1; transform:none;} }
+        .navbar a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.15s;
+        }
+        .navbar a:hover { color: var(--primary); }
+        .right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+        .right span { color: var(--text-light); font-size: 0.9rem; }
+        main { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
+        h1 { font-size: 1.75rem; margin: 0 0 20px; color: var(--text); font-weight: 700; }
+        h2 { font-size: 1.25rem; margin: 24px 0 12px; color: var(--text); }
+        .card { background: var(--card); border-radius: 10px; padding: 24px; border: 1px solid var(--border); margin-bottom: 16px; }
+        button, .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.15s;
+        }
+        button:hover, .btn:hover { background: var(--primary-dark); }
+        button.danger { background: var(--danger); }
+        button.danger:hover { background: #b91c1c; }
+        button.warning { background: var(--warning); }
+        button.warning:hover { background: #b45309; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f3f4f6; color: var(--text-light); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f9fafb; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        label { font-weight: 600; color: var(--text); font-size: 0.9rem; display: block; margin-bottom: 6px; }
+        .error { color: var(--danger); font-size: 0.85rem; margin-top: 4px; }
+        .success-msg { background: #dcfce7; color: #166534; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bbf7d0; }
+        footer { text-align: center; padding: 24px; color: var(--text-light); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 40px; }
+        .empty-state { text-align: center; padding: 48px; color: var(--text-light); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .grid-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; transition: border-color 0.15s; }
+        .grid-card:hover { border-color: var(--primary); }
+        .stat-bar { background: var(--primary); color: #fff; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .pagination { display: flex; justify-content: center; margin-top: 24px; gap: 8px; }
+        .pagination a, .pagination span { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; color: var(--text); }
+        .pagination .active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .form-group { margin-bottom: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <nav class="navbar" data-aos="fade-down">
-        <a href="{{ route('categories.create') }}">Créer votre catégorie</a>
-        <a href="{{ route('depenses.create') }}">Créer la dépense</a>
+    <nav class="navbar">
+        <a href="{{ route('categories.create') }}">Créer une catégorie</a>
+        <a href="{{ route('depenses.create') }}">Créer une dépense</a>
         <a href="{{ route('depenses.index') }}">Voir les dépenses</a>
         <a href="{{ route('categories.index') }}">Voir les catégories</a>
         <div class="right">
             @auth
-            <span>Connecté : {{auth()->user()->name}}</span>
-
-            <form action="{{ route('logout') }}" method="post">
+            <span>{{ auth()->user()->name }}</span>
+            <form action="{{ route('logout') }}" method="post" style="display:inline;">
                 @csrf
-
-                <button type="submit">Déconnexion</button>
+                <button type="submit" style="background:transparent;color:var(--text);padding:6px 12px;border:1px solid var(--border);">Déconnexion</button>
             </form>
-                
             @endauth
-
             @guest
             <a href="{{ route('register') }}">Inscription</a>
             <a href="{{ route('login') }}">Connexion</a>
@@ -59,35 +126,15 @@
         </div>
     </nav>
 
-    <hr>
-
     <main>
         @if (session('succes'))
-            <p role="status" data-aos="fade-in">{{ session('succes')}}</p>
+            <p class="success-msg" role="status">{{ session('succes') }}</p>
         @endif
-        <div data-aos="fade-up">
-            @yield('contenu')
-        </div>
+        @yield('contenu')
     </main>
 
     <footer>
         <p>Mon application Laravel - Elfred</p>
     </footer>
-
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
-    <script>
-        AOS.init({ duration: 700, once: true, easing: 'ease-out-cubic' });
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window.gsap) {
-                gsap.from('h1', { y: 24, opacity: 0, duration: 0.8, ease: 'power3.out' });
-                gsap.from('.card', { y: 30, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out' });
-            }
-            if (window.anime) {
-                anime({ targets: 'button', scale: [0.96, 1], duration: 400, easing: 'easeOutElastic(1, .6)' });
-            }
-        });
-    </script>
 </body>
 </html>
