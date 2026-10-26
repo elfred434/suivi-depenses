@@ -176,9 +176,12 @@
         .badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
         .badge-green { background: #e8f0ea; color: var(--accent); }
         .badge-blue { background: #e8edf5; color: #1e3a5f; }
-        .pagination { display: flex; justify-content: center; margin-top: 24px; gap: 6px; }
-        .pagination a, .pagination span { padding: 6px 12px; border: 1px solid var(--rule); border-radius: 3px; text-decoration: none; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; }
+        .pagination { display: flex; justify-content: center; margin-top: 24px; gap: 6px; flex-wrap: wrap; }
+        .pagination a, .pagination span { padding: 6px 12px; border: 1px solid var(--rule); border-radius: 3px; text-decoration: none; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; transition: background 0.15s, color 0.15s; }
+        .pagination a:hover { background: var(--paper); color: var(--accent); }
         .pagination .active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .pagination .disabled { color: var(--ink-light); cursor: not-allowed; opacity: 0.5; }
+        .pagination .dots { border: none; background: transparent; }
         .form-group { margin-bottom: 18px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
