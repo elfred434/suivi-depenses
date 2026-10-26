@@ -71,7 +71,7 @@ class CategorieController extends Controller
     }
 
     public function delete(Categorie $cat){
-        Gate::authorize('view', $cat);
+        Gate::authorize('delete', $cat);
 
         if ($cat->depenses()->exists()) {
             return back()->withErrors([

@@ -38,7 +38,7 @@
         <div>
             <label for="date_depenses">Date de la dépense</label>
             <input type="date" name="date_depenses" id="date_depenses"
-                value="{{ old('date_depenses', $dep->date_depenses) }}">
+                value="{{ old('date_depenses', $dep->date_depenses ? substr($dep->date_depenses, 0, 10) : '') }}">
             @error('date_depenses')
                 <p>{{ $message }}</p>
             @enderror

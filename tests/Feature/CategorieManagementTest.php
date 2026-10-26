@@ -284,4 +284,15 @@ class CategorieManagementTest extends TestCase
             ->delete(route('categories.delete', ['cat' => 99999]))
             ->assertNotFound();
     }
+
+    public function test_liste_categories_contient_lien_vers_detail(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id, 'nom' => 'Ma catégorie']);
+
+        $this->actingAs($user)
+            ->get(route('categories.index'))
+            ->assertOk()
+            ->assertSee(route('categorie.show', ['cat' => $categorie->id]));
+    }
 }

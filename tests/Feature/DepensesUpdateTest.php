@@ -325,4 +325,20 @@ class DepensesUpdateTest extends TestCase
             ])
             ->assertNotFound();
     }
+
+    public function test_champ_date_affiche_date_sans_heure(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $depense = Depense::factory()->create([
+            'user_id' => $user->id,
+            'categorie_id' => $categorie->id,
+            'date_depenses' => '2026-01-15 14:30:00',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('depenses.edit', ['dep' => $depense->id]))
+            ->assertOk()
+            ->assertSee('value="2026-01-15"', false);
+    }
 }

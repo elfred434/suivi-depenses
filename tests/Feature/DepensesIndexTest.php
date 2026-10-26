@@ -319,4 +319,18 @@ class DepensesIndexTest extends TestCase
 
         return $depense;
     }
+
+    public function test_recherche_libelle_zero(): void
+    {
+        $user = User::factory()->create();
+        $categorie = $this->createCategory($user, 'Alimentation');
+        $this->createExpense($user, $categorie, '0', '2026-01-02');
+        $this->createExpense($user, $categorie, 'Autre', '2026-01-02');
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['libelle' => '0']))
+            ->assertOk()
+            ->assertSee('0')
+            ->assertDontSee('Autre');
+    }
 }

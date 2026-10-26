@@ -42,22 +42,21 @@ class DepensesController extends Controller
         $date_fin = $donnees['date_fin'] ?? null;
         $requete = $request->user()->depenses();
 
-        //recherche dans le libelle
-        if (!empty($libelle)) {
+        if (filled($libelle)) {
             $requete->where('libelle', 'like', '%' . $libelle . '%');
         }
 
         //filtre par catégorie
-        if (!empty($categorie_id)) {
+        if (filled($categorie_id)) {
             $requete->where('categorie_id', $categorie_id);
         }
 
         //filtre par date de début et de fin
-        if (!empty($date_debut)) {
+        if (filled($date_debut)) {
             $requete->whereDate('date_depenses', '>=', $date_debut);
         }
 
-        if (!empty($date_fin)) {
+        if (filled($date_fin)) {
             $requete->whereDate('date_depenses', '<=', $date_fin);
         }
 

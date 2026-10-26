@@ -45,8 +45,7 @@ class CategoriePolicy
      */
     public function delete(User $user, Categorie $categorie): bool
     {
-        return $categorie->user_id === $user->id
-            && ! $categorie->depenses()->exists();
+        return $categorie->user_id === $user->id;
     }
 
     /**

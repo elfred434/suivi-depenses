@@ -7,6 +7,7 @@ use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use LogicException;
 
 class ExpenseTestDataSeeder extends Seeder
 {
