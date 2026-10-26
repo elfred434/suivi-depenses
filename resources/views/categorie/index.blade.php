@@ -21,4 +21,6 @@
             <li>Aucune catégorie pour le moment.</li>
         @endforelse
     </ul>
+
+    {{ $categorie->links() }}
 @endsection

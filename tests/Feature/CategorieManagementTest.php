@@ -295,4 +295,22 @@ class CategorieManagementTest extends TestCase
             ->assertOk()
             ->assertSee(route('categorie.show', ['cat' => $categorie->id]));
     }
+
+    public function test_liste_categories_paginee_avec_lien_page_2(): void
+    {
+        $user = User::factory()->create();
+        for ($i = 1; $i <= 11; $i++) {
+            Categorie::factory()->create(['user_id' => $user->id, 'nom' => 'Cat ' . $i]);
+        }
+
+        $this->actingAs($user)
+            ->get(route('categories.index'))
+            ->assertOk()
+            ->assertSee('page=2', false);
+
+        $this->actingAs($user)
+            ->get(route('categories.index', ['page' => 2]))
+            ->assertOk()
+            ->assertSee('Cat 1');
+    }
 }

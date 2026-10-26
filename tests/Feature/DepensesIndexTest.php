@@ -330,7 +330,7 @@ class DepensesIndexTest extends TestCase
         $this->actingAs($user)
             ->get(route('depenses.index', ['libelle' => '0']))
             ->assertOk()
-            ->assertSee('0')
-            ->assertDontSee('Autre');
+            ->assertDontSee('Autre')
+            ->assertViewHas('total', 100);
     }
 }
