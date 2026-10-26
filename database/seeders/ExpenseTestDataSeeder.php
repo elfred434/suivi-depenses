@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use LogicException;
 
 class ExpenseTestDataSeeder extends Seeder
 {
@@ -17,20 +16,12 @@ class ExpenseTestDataSeeder extends Seeder
             throw new LogicException('The demonstration data seeder must not run in production.');
         }
 
-        $users = User::query()->where('name', 'like', 'pot%')->get();
-
-        if ($users->count() > 1) {
-            throw new LogicException(
-                "Expected at most one user whose name starts with 'pot'; found {$users->count()}."
-            );
-        }
-
-        $user = $users->first() ?? User::query()->where('email', 'demo@example.test')->first();
+        $user = User::query()->where('email', 'demo@example.test')->first();
 
         if ($user === null) {
             $demoPassword = Str::random(40);
             $user = User::factory()->create([
-                'name' => 'Demo User',
+                'name' => 'Utilisateur démonstration',
                 'email' => 'demo@example.test',
                 'password' => $demoPassword,
             ]);
@@ -68,14 +59,14 @@ class ExpenseTestDataSeeder extends Seeder
 
         foreach ($depenses as [$nomCategorie, $libelle, $montant, $date, $description]) {
             $categorie = $categories[$nomCategorie];
-            $depenseExists = Depenses::query()
+            $depenseExists = Depense::query()
                 ->where('user_id', $user->id)
                 ->where('categorie_id', $categorie->id)
                 ->where('libelle', $libelle)
                 ->exists();
 
             if (! $depenseExists) {
-                Depenses::factory()->create([
+                Depense::factory()->create([
                     'user_id' => $user->id,
                     'categorie_id' => $categorie->id,
                     'libelle' => $libelle,

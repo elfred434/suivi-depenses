@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Depenses;
+use App\Models\Depense;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreDepensesRequest;
 use App\Http\Requests\IndexDepensesRequest;
@@ -20,7 +20,7 @@ class DepensesController extends Controller
     public function store(StoreDepensesRequest $request){
         $donnees = $request->validated();
 
-        $dep = new Depenses();
+        $dep = new Depense();
         $dep->libelle = $donnees['libelle'];
         $dep->montant = $donnees['montant'];
         $dep->date_depenses = $donnees['date_depenses'];
@@ -74,14 +74,14 @@ class DepensesController extends Controller
 
         return view('depenses.index', compact('depenses', 'categories', 'total'));
     }
-    public function show(Depenses $dep){
+    public function show(Depense $dep){
         Gate::authorize('view', $dep);
 
         return view ('depenses.show', [
             'dep' => $dep
         ]);
     }
-    public function edit(Depenses $dep){
+    public function edit(Depense $dep){
         Gate::authorize('update', $dep);
           $categories = auth()->user()->categorie()->orderBy('nom')->get();
 
@@ -91,7 +91,7 @@ class DepensesController extends Controller
     ]);
     }
 
-    public function update(UpdateDepensesRequest $request, Depenses $dep){
+    public function update(UpdateDepensesRequest $request, Depense $dep){
         $donnees = $request->validated();
 
         $dep->libelle = $donnees['libelle'];
@@ -110,7 +110,7 @@ class DepensesController extends Controller
 
     }
 
-    public function delete(Depenses $dep){
+    public function delete(Depense $dep){
         Gate::authorize('delete', $dep);
 
         $dep->delete();

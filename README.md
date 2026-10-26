@@ -49,7 +49,7 @@ Ouvrez l’URL indiquée par Artisan. L’inscription permet de créer un compte
 php artisan db:seed
 ```
 
-Le seeder ajoute des catégories et dépenses sans créer de doublons. S’il trouve un unique compte dont le nom commence par `pot`, il lui rattache les données. Sinon, il utilise ou crée `demo@example.test` et affiche un mot de passe aléatoire lors de sa création. Conservez ce mot de passe uniquement pour votre environnement local ; ne lancez pas le seeder de démonstration en production.
+Le seeder ajoute des catégories et dépenses sans créer de doublons. Il utilise un compte de démonstration explicite (`demo@example.test`) : s’il n’existe pas, il le crée avec un mot de passe aléatoire affiché lors de la création. Conservez ce mot de passe uniquement pour votre environnement local ; ne lancez pas le seeder de démonstration en production.
 
 ## Tests
 

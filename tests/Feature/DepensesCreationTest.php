@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

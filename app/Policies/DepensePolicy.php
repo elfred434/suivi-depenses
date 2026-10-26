@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class DepensesPolicy
+class DepensePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class DepensesPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Depenses $depenses): bool
+    public function view(User $user, Depense $depenses): bool
     {
         return $depenses->user_id === $user->id;
     }
@@ -35,7 +35,7 @@ class DepensesPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Depenses $depenses): bool
+    public function update(User $user, Depense $depenses): bool
     {
         return $depenses->user_id === $user->id;
     }
@@ -43,7 +43,7 @@ class DepensesPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Depenses $depenses): bool
+    public function delete(User $user, Depense $depenses): bool
     {
        return $depenses->user_id === $user->id;
     }
@@ -51,7 +51,7 @@ class DepensesPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Depenses $depenses): bool
+    public function restore(User $user, Depense $depenses): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class DepensesPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Depenses $depenses): bool
+    public function forceDelete(User $user, Depense $depenses): bool
     {
         return false;
     }

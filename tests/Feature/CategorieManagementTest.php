@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -61,7 +61,7 @@ class CategorieManagementTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        Depenses::factory()->create([
+        Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -169,7 +169,7 @@ class CategorieManagementTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        Depenses::factory()->create([
+        Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
             'libelle' => 'Dépense visible',

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,7 +16,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
             'libelle' => 'Ancien libellé',
@@ -54,7 +54,7 @@ class DepensesUpdateTest extends TestCase
         $owner = User::factory()->create();
         $otherUser = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $owner->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $owner->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -70,7 +70,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
             'montant' => 100,
@@ -99,7 +99,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -120,7 +120,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -141,7 +141,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -163,7 +163,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -186,7 +186,7 @@ class DepensesUpdateTest extends TestCase
         $other = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
         $otherCategorie = Categorie::factory()->create(['user_id' => $other->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
             'libelle' => 'Original',
@@ -215,7 +215,7 @@ class DepensesUpdateTest extends TestCase
         $user = User::factory()->create();
         $cat1 = Categorie::factory()->create(['user_id' => $user->id]);
         $cat2 = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $cat1->id,
         ]);
@@ -240,7 +240,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -257,7 +257,7 @@ class DepensesUpdateTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
         ]);
@@ -282,7 +282,7 @@ class DepensesUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $user->id,
             'categorie_id' => $categorie->id,
             'libelle' => 'Depense detail',

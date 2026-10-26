@@ -15,6 +15,6 @@ class Categorie extends Model
         return $this->belongsTo(User::class);
     }
     public function depenses(): HasMany{
-        return $this->hasmany(Depenses::class, 'categorie_id');
+        return $this->hasmany(Depense::class, 'categorie_id');
     }
 }

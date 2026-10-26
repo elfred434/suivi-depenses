@@ -86,7 +86,7 @@
                 @foreach ($depenses as $depense)
                     <tr>
                         <td>{{ $depense->date_depenses }}</td>
-                        <td>{{ $depense->libelle }}</td>
+                        <td><a href="{{ route('depenses.show', ['dep' => $depense->id]) }}">{{ $depense->libelle }}</a></td>
                         <td>{{ $depense->categorie->nom }}</td>
                         <td>{{ number_format($depense->montant, 0, ',', ' ') }} FCFA</td>
                         <td>{{ $depense->description }}</td>

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -63,14 +63,14 @@ class DepensesDeletionTest extends TestCase
             ->assertNotFound();
     }
 
-    private function createExpense(User $user): Depenses
+    private function createExpense(User $user): Depense
     {
         $categorie = new Categorie();
         $categorie->nom = 'Alimentation';
         $categorie->user()->associate($user);
         $categorie->save();
 
-        $depense = new Depenses();
+        $depense = new Depense();
         $depense->libelle = 'Courses';
         $depense->montant = 42;
         $depense->date_depenses = '2026-10-25';

@@ -4,7 +4,7 @@
 
 @section('contenu')
 
-    <h1>Modifier la tâche {{ $cat->nom }}</h1>
+    <h1>Modifier la catégorie {{ $cat->nom }}</h1>
 
     <form action="{{ route('categories.update', ['cat' => $cat->id]) }}" method="post">
         @csrf
@@ -20,9 +20,7 @@
         </div>
         <div>
             <label for="description">Description</label>
-            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">
-                {{ old('description', $cat->description) }}
-            </textarea>
+            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">{{ old('description', $cat->description) }}</textarea>
 
             @error('description')
                 <p>{{ $message }}</p>

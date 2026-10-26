@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -308,9 +308,9 @@ class DepensesIndexTest extends TestCase
         return $categorie;
     }
 
-    private function createExpense(User $user, Categorie $categorie, string $libelle, string $date): Depenses
+    private function createExpense(User $user, Categorie $categorie, string $libelle, string $date): Depense
     {
-        $depense = new Depenses();
+        $depense = new Depense();
         $depense->libelle = $libelle;
         $depense->montant = 100;
         $depense->date_depenses = $date;

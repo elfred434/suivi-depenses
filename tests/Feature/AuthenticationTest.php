@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -56,7 +56,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $user->id]);
-        $depense = Depenses::factory()->create(['user_id' => $user->id, 'categorie_id' => $categorie->id]);
+        $depense = Depense::factory()->create(['user_id' => $user->id, 'categorie_id' => $categorie->id]);
 
         $this->get(route('categories.edit', ['cat' => $categorie->id]))->assertRedirect(route('login'));
         $this->get(route('depenses.edit', ['dep' => $depense->id]))->assertRedirect(route('login'));
@@ -75,7 +75,7 @@ class AuthenticationTest extends TestCase
         $owner = User::factory()->create();
         $otherUser = User::factory()->create();
         $categorie = Categorie::factory()->create(['user_id' => $owner->id]);
-        $depense = Depenses::factory()->create([
+        $depense = Depense::factory()->create([
             'user_id' => $owner->id,
             'categorie_id' => $categorie->id,
         ]);

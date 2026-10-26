@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('titre', 'Formulaire de mise à jour de la dépenses')
+@section('titre', 'Formulaire de mise à jour de la dépense')
 
 @section('contenu')
-    <h1>Modifiez une dépenses</h1>
+    <h1>Modifier une dépense</h1>
     <form action="{{ route('depenses.update', ['dep' => $dep->id]) }}" method="post">
         @csrf
         @method('PATCH')
 
         <div>
-            <label for="libelle">Libelle</label>
+            <label for="libelle">Libellé</label>
             <input type="text" name="libelle" id="libelle" value="{{ old('libelle', $dep->libelle) }}">
 
             @error('libelle')
@@ -19,9 +19,7 @@
 
         <div>
             <label for="description">Description</label>
-            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">
-                {{ old('description', $dep->description) }}
-            </textarea>
+            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">{{ old('description', $dep->description) }}</textarea>
 
             @error('description')
                 <p>{{ $message }}</p>
@@ -38,7 +36,7 @@
         </div>
 
         <div>
-            <label for="date_depenses">Date de la depenses</label>
+            <label for="date_depenses">Date de la dépense</label>
             <input type="date" name="date_depenses" id="date_depenses"
                 value="{{ old('date_depenses', $dep->date_depenses) }}">
             @error('date_depenses')
@@ -62,7 +60,7 @@
                 <p>{{ $message }}</p>
             @enderror
         </div>
-        <button type="submit">Enregistrez les modifications</button>
+        <button type="submit">Enregistrer les modifications</button>
 
 
     </form>

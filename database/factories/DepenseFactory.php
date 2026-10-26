@@ -3,15 +3,15 @@
 namespace Database\Factories;
 
 use App\Models\Categorie;
-use App\Models\Depenses;
+use App\Models\Depense;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Depenses>
+ * @extends Factory<Depense>
  */
-class DepensesFactory extends Factory
+class DepenseFactory extends Factory
 {
-    protected $model = Depenses::class;
+    protected $model = Depense::class;
 
     public function definition(): array
     {
@@ -27,7 +27,7 @@ class DepensesFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterMaking(function (Depenses $depense): void {
+        return $this->afterMaking(function (Depense $depense): void {
             if ($depense->user_id === null) {
                 $depense->user_id = $depense->categorie->user_id;
             }

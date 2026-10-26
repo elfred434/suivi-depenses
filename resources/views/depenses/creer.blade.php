@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('titre', 'Formulaire de crétion dépensess')
+@section('titre', 'Formulaire de création de dépense')
 
 @section('contenu')
-    <h1>Créé une dépenses</h1>
+    <h1>Créer une dépense</h1>
     <form action="{{ route('depenses.store') }}" method="post">
         @csrf
         <div>
@@ -37,9 +37,7 @@
 
         <div>
             <label for="description">Description</label>
-            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">
-                {{ old('description') }}
-            </textarea>
+            <textarea name="description" id="description" maxlength="1000" cols="30" rows="10">{{ old('description') }}</textarea>
 
             @error('description')
                 <p>{{ $message }}</p>
@@ -62,6 +60,6 @@
             @enderror
         </div>
 
-        <button type="submit">Créé la dépenses</button>
+        <button type="submit">Créer la dépense</button>
     </form>
 @endsection

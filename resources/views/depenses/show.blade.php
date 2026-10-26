@@ -41,7 +41,7 @@
     </table>
 
     <a href="{{ route('depenses.edit', [
-    'dep' => $dep->id]) }}">Modifier la depenses</a>
+    'dep' => $dep->id]) }}">Modifier la dépense</a>
     <form action="{{ route('depenses.delete', ['dep' => $dep->id]) }}" method="post">
         @csrf
         @method('delete')

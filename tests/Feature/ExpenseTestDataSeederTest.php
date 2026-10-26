@@ -13,7 +13,7 @@ class ExpenseTestDataSeederTest extends TestCase
 
     public function test_seme_categories_et_depenses_pour_l_utilisateur_correspondant_de_maniere_idempotente(): void
     {
-        $user = User::factory()->create(['name' => 'pot-test']);
+        $user = User::factory()->create(['email' => 'demo@example.test', 'name' => 'Utilisateur démonstration']);
 
         $this->seed(ExpenseTestDataSeeder::class);
         $this->seed(ExpenseTestDataSeeder::class);
@@ -47,7 +47,7 @@ class ExpenseTestDataSeederTest extends TestCase
         $this->assertDatabaseCount('depenses', 12);
         $this->assertDatabaseHas('users', [
             'email' => 'demo@example.test',
-            'name' => 'Demo User',
+            'name' => 'Utilisateur démonstration',
         ]);
 
         $demoUser = User::query()->where('email', 'demo@example.test')->firstOrFail();
@@ -63,7 +63,7 @@ class ExpenseTestDataSeederTest extends TestCase
 
     public function test_la_factory_depense_utilise_le_proprietaire_de_la_categorie_si_pas_d_utilisateur(): void
     {
-        $depense = \App\Models\Depenses::factory()->create();
+        $depense = \App\Models\Depense::factory()->create();
 
         $this->assertSame($depense->categorie->user_id, $depense->user_id);
     }

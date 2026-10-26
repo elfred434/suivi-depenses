@@ -71,9 +71,7 @@ class CategorieController extends Controller
     }
 
     public function delete(Categorie $cat){
-        if ($cat->user_id !== request()->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('view', $cat);
 
         if ($cat->depenses()->exists()) {
             return back()->withErrors([
@@ -81,12 +79,11 @@ class CategorieController extends Controller
             ]);
         }
 
-        Gate::authorize('delete', $cat);
         $cat->delete();
 
         return redirect()
-        ->route('categories.index')
-        ->with('succes', 'la catégorie a été supprimé');
+            ->route('categories.index')
+            ->with('succes', 'la catégorie a été supprimé');
     }
     
 
