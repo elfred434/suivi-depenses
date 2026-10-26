@@ -1,0 +1,79 @@
+@extends('layouts.app')
+
+@section('titre', 'Nouvelle dépense')
+
+@section('contenu')
+    <h1>Créer une dépense</h1>
+
+    {{-- Message si aucune catégorie --}}
+    @if ($categories->isEmpty())
+        <p>
+            Vous n'avez aucune catégorie.
+            <a href="{{ route('categories.create') }}">Créez-en une d'abord</a>.
+        </p>
+    @else
+        <form action="{{ route('depenses.store') }}" method="post">
+            @csrf
+
+            {{-- Libellé --}}
+            <div>
+                <label for="libelle">Libellé (obligatoire)</label>
+                <input type="text" name="libelle" id="libelle"
+                    value="{{ old('libelle') }}" required maxlength="100">
+                @error('libelle')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Montant --}}
+            <div>
+                <label for="montant">Montant en centimes (obligatoire)</label>
+                <input type="number" name="montant" id="montant"
+                    value="{{ old('montant') }}" required min="1">
+                @error('montant')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Date --}}
+            <div>
+                <label for="date_depenses">Date (obligatoire)</label>
+                <input type="date" name="date_depenses" id="date_depenses"
+                    value="{{ old('date_depenses', date('Y-m-d')) }}" required>
+                @error('date_depenses')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Catégorie (select) --}}
+            <div>
+                <label for="categorie_id">Catégorie (obligatoire)</label>
+                <select name="categorie_id" id="categorie_id" required>
+                    <option value="">-- Choisir une catégorie --</option>
+                    @foreach ($categories as $cat)
+                        <option value="{{ $cat->id }}"
+                            {{ old('categorie_id') == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->nom }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('categorie_id')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Description --}}
+            <div>
+                <label for="description">Description (facultatif)</label>
+                <textarea name="description" id="description" rows="5" maxlength="1000">
+                    {{ old('description') }}
+                </textarea>
+                @error('description')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button type="submit">Enregistrer la dépense</button>
+        </form>
+    @endif
+@endsection
