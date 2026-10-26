@@ -146,6 +146,158 @@ class DepensesIndexTest extends TestCase
             ->assertDontSee('Privée');
     }
 
+    public function test_index_vide_affiche_message(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('depenses.index'))
+            ->assertOk()
+            ->assertSee('Aucune dépense trouvée.');
+    }
+
+    public function test_filtre_par_libelle_seul(): void
+    {
+        $user = User::factory()->create();
+        $categorie = $this->createCategory($user, 'Alimentation');
+        $this->createExpense($user, $categorie, 'Courses', '2026-01-02');
+        $this->createExpense($user, $categorie, 'Transport', '2026-01-02');
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['libelle' => 'Courses']))
+            ->assertOk()
+            ->assertSee('Courses')
+            ->assertDontSee('Transport');
+    }
+
+    public function test_filtre_par_categorie_seul(): void
+    {
+        $user = User::factory()->create();
+        $cat1 = $this->createCategory($user, 'Alimentation');
+        $cat2 = $this->createCategory($user, 'Transport');
+        $this->createExpense($user, $cat1, 'Depense A', '2026-01-02');
+        $this->createExpense($user, $cat2, 'Depense B', '2026-01-02');
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['categorie_id' => $cat1->id]))
+            ->assertOk()
+            ->assertSee('Depense A')
+            ->assertDontSee('Depense B');
+    }
+
+    public function test_filtre_par_date_debut_seul(): void
+    {
+        $user = User::factory()->create();
+        $categorie = $this->createCategory($user, 'Alimentation');
+        $this->createExpense($user, $categorie, 'Ancienne', '2026-01-01');
+        $this->createExpense($user, $categorie, 'Recente', '2026-01-03');
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['date_debut' => '2026-01-02']))
+            ->assertOk()
+            ->assertSee('Recente')
+            ->assertDontSee('Ancienne');
+    }
+
+    public function test_filtre_par_date_fin_seul(): void
+    {
+        $user = User::factory()->create();
+        $categorie = $this->createCategory($user, 'Alimentation');
+        $this->createExpense($user, $categorie, 'Ancienne', '2026-01-01');
+        $this->createExpense($user, $categorie, 'Recente', '2026-01-03');
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['date_fin' => '2026-01-02']))
+            ->assertOk()
+            ->assertSee('Ancienne')
+            ->assertDontSee('Recente');
+    }
+
+    public function test_total_avec_zero_depense(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('depenses.index'))
+            ->assertOk()
+            ->assertSee('Montant total correspondant aux filtres : 0 FCFA');
+    }
+
+    public function test_total_avec_filtre_par_categorie(): void
+    {
+        $user = User::factory()->create();
+        $cat1 = $this->createCategory($user, 'Alimentation');
+        $cat2 = $this->createCategory($user, 'Transport');
+        $d1 = $this->createExpense($user, $cat1, 'Depense A', '2026-01-02');
+        $d1->montant = 100;
+        $d1->save();
+        $d2 = $this->createExpense($user, $cat2, 'Depense B', '2026-01-02');
+        $d2->montant = 200;
+        $d2->save();
+
+        $this->actingAs($user)
+            ->get(route('depenses.index', ['categorie_id' => $cat1->id]))
+            ->assertOk()
+            ->assertSee('Montant total correspondant aux filtres : 100 FCFA');
+    }
+
+    public function test_index_rejette_categorie_d_un_autre_utilisateur(): void
+    {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $otherCat = $this->createCategory($other, 'Privee');
+
+        $this->actingAs($user)
+            ->from(route('depenses.index'))
+            ->get(route('depenses.index', ['categorie_id' => $otherCat->id]))
+            ->assertRedirect(route('depenses.index'))
+            ->assertSessionHasErrors('categorie_id');
+    }
+
+    public function test_index_rejette_date_debut_invalide(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('depenses.index'))
+            ->get(route('depenses.index', ['date_debut' => 'pas-une-date']))
+            ->assertRedirect(route('depenses.index'))
+            ->assertSessionHasErrors('date_debut');
+    }
+
+    public function test_index_rejette_date_fin_invalide(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('depenses.index'))
+            ->get(route('depenses.index', ['date_fin' => 'pas-une-date']))
+            ->assertRedirect(route('depenses.index'))
+            ->assertSessionHasErrors('date_fin');
+    }
+
+    public function test_index_conserve_filtres_sur_page_2(): void
+    {
+        $user = User::factory()->create();
+        $categorie = $this->createCategory($user, 'Alimentation');
+
+        for ($i = 1; $i <= 12; $i++) {
+            $this->createExpense($user, $categorie, 'Achat ' . $i, '2026-01-02');
+        }
+
+        $response = $this->actingAs($user)->get(route('depenses.index', [
+            'libelle' => 'Achat',
+            'categorie_id' => $categorie->id,
+            'date_debut' => '2026-01-01',
+            'date_fin' => '2026-01-03',
+            'page' => 2,
+        ]));
+
+        $response->assertOk()
+            ->assertSee('Achat 2')
+            ->assertSee('Achat 1');
+    }
+
     private function createCategory(User $user, string $nom): Categorie
     {
         $categorie = new Categorie();

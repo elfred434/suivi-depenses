@@ -55,6 +55,14 @@ class DepensesDeletionTest extends TestCase
         $this->assertDatabaseHas('depenses', ['id' => $depense->id]);
     }
 
+    public function test_suppression_depense_inexistante_retourne_404(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user)
+            ->delete(route('depenses.delete', ['dep' => 99999]))
+            ->assertNotFound();
+    }
+
     private function createExpense(User $user): Depenses
     {
         $categorie = new Categorie();

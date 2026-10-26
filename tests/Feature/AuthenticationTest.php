@@ -96,4 +96,186 @@ class AuthenticationTest extends TestCase
             'user_id' => $owner->id,
         ]);
     }
+    public function test_inscription_valide_cree_un_compte(): void
+    {
+        $this->post(route('register.store'), [
+            'name' => 'Nouveau Compte',
+            'email' => 'nouveau@example.test',
+            'password' => 'un-mot-de-passe-solide-12',
+            'password_confirmation' => 'un-mot-de-passe-solide-12',
+        ])->assertRedirect(route('register'));
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'Nouveau Compte',
+            'email' => 'nouveau@example.test',
+        ]);
+    }
+
+    public function test_inscription_rejette_les_champs_invalides(): void
+    {
+        // nom vide
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => '',
+                'email' => 'a@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('name');
+
+        // nom trop long
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => str_repeat('N', 101),
+                'email' => 'b@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('name');
+
+        // email invalide
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Test',
+                'email' => 'pas-un-email',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('email');
+
+        // email dupliqué
+        User::factory()->create(['email' => 'dup@example.test']);
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Test',
+                'email' => 'dup@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('email');
+
+        // mot de passe trop court
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Test',
+                'email' => 'c@example.test',
+                'password' => 'court',
+                'password_confirmation' => 'court',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('password');
+
+        // confirmation ne correspond pas
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Test',
+                'email' => 'd@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'autre-chose-123456',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('password');
+    }
+
+    public function test_connexion_valide_authentifie_l_utilisateur(): void
+    {
+        $user = User::factory()->create(['password' => bcrypt('mot-de-passe-valide-12')]);
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'mot-de-passe-valide-12',
+        ])->assertRedirect(route('categories.index'));
+
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_connexion_rejette_les_identifiants_invalides(): void
+    {
+        $user = User::factory()->create(['password' => bcrypt('mot-de-passe-valide-12')]);
+
+        $this->from(route('login'))
+            ->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'mauvais-mot-de-passe',
+            ])
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('email')
+            ->assertSessionHasInput('email', $user->email);
+
+        $this->assertGuest();
+    }
+
+    public function test_connexion_valide_requiert_email_et_mot_de_passe(): void
+    {
+        $this->from(route('login'))
+            ->post(route('login.store'), [])
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors(['email', 'password']);
+    }
+
+    public function test_deconnexion_deconnecte_l_utilisateur(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user)
+            ->post(route('logout'))
+            ->assertRedirect(route('login'));
+        $this->assertGuest();
+    }
+
+
+    public function test_page_accueil_retourne_succes(): void
+    {
+        $this->get('/')
+            ->assertOk();
+    }
+
+    public function test_page_inscription_affiche_formulaire(): void
+    {
+        $this->get(route('register'))
+            ->assertOk()
+            ->assertSee('name="_token"', false);
+    }
+
+    public function test_page_connexion_affiche_formulaire(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('name="_token"', false);
+    }
+
+    public function test_deconnexion_par_visiteur_redirige_vers_connexion(): void
+    {
+        $this->post(route('logout'))
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_inscription_rejette_email_trop_long(): void
+    {
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Test',
+                'email' => str_repeat('a', 256) . '@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('email');
+    }
+
+    public function test_inscription_rejette_nom_trop_long(): void
+    {
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => str_repeat('N', 101),
+                'email' => 'long@example.test',
+                'password' => 'un-mot-de-passe-solide-12',
+                'password_confirmation' => 'un-mot-de-passe-solide-12',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('name');
+    }
 }

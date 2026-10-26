@@ -111,4 +111,159 @@ class DepensesCreationTest extends TestCase
 
         $this->assertDatabaseCount('depenses', 0);
     }
+
+    public function test_creation_depense_rejette_libelle_invalide(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        foreach (['', 'AB', str_repeat('L', 101)] as $libelle) {
+            $this->from(route('depenses.create'))
+                ->post(route('depenses.store'), [
+                    'libelle' => $libelle,
+                    'montant' => 10,
+                    'date_depenses' => '2026-01-01',
+                    'categorie_id' => $categorie->id,
+                ])
+                ->assertRedirect(route('depenses.create'))
+                ->assertSessionHasErrors('libelle');
+        }
+
+        $this->assertDatabaseCount('depenses', 0);
+    }
+
+    public function test_creation_depense_rejette_montant_invalide(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        foreach ([null, 0, -1, 'abc', '1.5'] as $montant) {
+            $this->from(route('depenses.create'))
+                ->post(route('depenses.store'), [
+                    'libelle' => 'Libelle valide',
+                    'montant' => $montant,
+                    'date_depenses' => '2026-01-01',
+                    'categorie_id' => $categorie->id,
+                ])
+                ->assertRedirect(route('depenses.create'))
+                ->assertSessionHasErrors('montant');
+        }
+
+        $this->assertDatabaseCount('depenses', 0);
+    }
+
+    public function test_creation_depense_rejette_date_invalide(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        $this->from(route('depenses.create'))
+            ->post(route('depenses.store'), [
+                'libelle' => 'Libelle valide',
+                'montant' => 10,
+                'date_depenses' => 'pas-une-date',
+                'categorie_id' => $categorie->id,
+            ])
+            ->assertRedirect(route('depenses.create'))
+            ->assertSessionHasErrors('date_depenses');
+
+        $this->assertDatabaseCount('depenses', 0);
+    }
+
+    public function test_creation_depense_rejette_categorie_inexistante(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->from(route('depenses.create'))
+            ->post(route('depenses.store'), [
+                'libelle' => 'Libelle valide',
+                'montant' => 10,
+                'date_depenses' => '2026-01-01',
+                'categorie_id' => 99999,
+            ])
+            ->assertRedirect(route('depenses.create'))
+            ->assertSessionHasErrors('categorie_id');
+
+        $this->assertDatabaseCount('depenses', 0);
+    }
+
+    public function test_creation_depense_rejette_champs_requis_manquants(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->from(route('depenses.create'))
+            ->post(route('depenses.store'), [])
+            ->assertRedirect(route('depenses.create'))
+            ->assertSessionHasErrors(['libelle', 'montant', 'date_depenses', 'categorie_id']);
+
+        $this->assertDatabaseCount('depenses', 0);
+    }
+
+    public function test_creation_depense_accepte_libelle_et_montant_limites(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        $this->post(route('depenses.store'), [
+            'libelle' => str_repeat('L', 3),
+            'montant' => 1,
+            'date_depenses' => '2026-01-01',
+            'categorie_id' => $categorie->id,
+        ])->assertRedirect(route('depenses.index'));
+
+        $this->post(route('depenses.store'), [
+            'libelle' => str_repeat('L', 100),
+            'montant' => 500000,
+            'date_depenses' => '2026-01-01',
+            'categorie_id' => $categorie->id,
+        ])->assertRedirect(route('depenses.index'));
+
+        $this->assertDatabaseCount('depenses', 2);
+    }
+
+    public function test_creation_depense_sans_description(): void
+    {
+        $user = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        $this->post(route('depenses.store'), [
+            'libelle' => 'Sans desc',
+            'montant' => 10,
+            'date_depenses' => '2026-01-01',
+            'categorie_id' => $categorie->id,
+        ])->assertRedirect(route('depenses.index'));
+
+        $this->assertDatabaseHas('depenses', [
+            'libelle' => 'Sans desc',
+            'description' => null,
+        ]);
+    }
+
+    public function test_creation_depense_conserve_proprietaire_malgre_user_id_falsifie(): void
+    {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        $categorie = Categorie::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        $this->post(route('depenses.store'), [
+            'libelle' => 'Test proprietaire',
+            'montant' => 10,
+            'date_depenses' => '2026-01-01',
+            'categorie_id' => $categorie->id,
+            'user_id' => $other->id,
+        ])->assertRedirect(route('depenses.index'));
+
+        $this->assertDatabaseHas('depenses', [
+            'libelle' => 'Test proprietaire',
+            'user_id' => $user->id,
+        ]);
+    }
 }
